@@ -1,0 +1,23 @@
+sudo: required
+services:
+ - docker
+
+before_install: 
+ - docker build -t boppatea/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+ - docker run boppatea/react-test npm test -- --coverage
+
+after_success:
+ - docker build -t boppatea/multi-client ./client
+ - docker build -t boppatea/multi-nginx ./nginx
+ - docker build -t boppatea/multi-server ./server
+ - docker build -t boppatea/multi-worker ./worker
+
+ # Log in to docker CLI
+ - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+ # Push images
+ - docker push boppatea/multi-client
+ - docker push boppatea/multi-nginx
+ - docker push boppatea/multi-server
+ - docker push boppatea/multi-worker
