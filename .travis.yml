@@ -21,3 +21,17 @@ after_success:
  - docker push boppatea/multi-nginx
  - docker push boppatea/multi-server
  - docker push boppatea/multi-worker
+
+deploy:
+ provider: elasticbeanstalk
+ region: us-east-1
+ app: multi-docker
+ env: MultiDocker-env
+ bucket_name: #bucket_name
+ bucket_path: #bucket_path
+ on:
+  branch: master
+ access_key_id: $AWS_ACCESS_KEY
+ secret_access_key:
+  secure: $AWS_SECRET_KEY
+
